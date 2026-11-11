@@ -115,6 +115,13 @@ tr.sum td{font-weight:600;border-top:2px solid var(--line);border-bottom:0}
 .hb i{display:block;height:100%;border-radius:3px;background:var(--accent);transition:width .2s}
 @media (prefers-reduced-motion: reduce){.hb i{transition:none}}
 .hb em{font-style:normal;text-align:right;font-variant-numeric:tabular-nums}
+details.src{margin:10px 0}
+details.src summary{cursor:pointer;color:var(--accent);font-size:14px;padding:4px 0}
+.callout{border:1px solid var(--line);border-left:3px solid var(--p1);border-radius:6px;padding:8px 12px;margin:12px 0 0;font-size:14px}
+.callout.warn{border-color:transparent;border-left-color:var(--p0);background:var(--warn-bg);color:var(--warn-fg)}
+.demo h4{font-size:15px;margin:18px 0 8px}
+.copy.dl{right:58px}
+.q{color:var(--muted);margin-top:0}
 </style>
 </head>
 <body>
@@ -122,6 +129,7 @@ tr.sum td{font-weight:600;border-top:2px solid var(--line);border-bottom:0}
 <nav class="toc" aria-label="目录">
   <div class="brand">BokeMd 新增样式</div>
   <a href="#overview">一览</a>
+  <a href="#samples">完整样例</a>
   <a href="#tabs">选项卡 :::tabs</a>
   <a href="#columns">分栏 :::columns</a>
   <a href="#tables">表格增强</a>
@@ -135,7 +143,7 @@ tr.sum td{font-weight:600;border-top:2px solid var(--line);border-bottom:0}
 <main>
 <header class="top">
   <h1>BokeMd 新增样式需求</h1>
-  <p class="lead">问数结论现在只能用正文、表格、指标卡、图表和折叠块来排。遇到“两个项目各说各的”“左右对比”“一张表里看涨跌”这些常见场景，只能上下堆着放。这份文档列出后端希望渲染器新增的写法，每项都带可点的效果示意。</p>
+  <p class="lead">问数结论现在只能用正文、表格、指标卡、图表和折叠块来排。遇到“两个项目各说各的”“左右对比”“一张表里看涨跌”这些常见场景，只能上下堆着放。这份文档列出后端希望渲染器新增的写法，每项都带可点的效果示意，另有三篇合起来用的完整样例。</p>
   <div class="meta">
     <span class="chip"><b>写给</b> BokeMd 渲染器负责人</span>
     <span class="chip"><b>契约</b> markdown.doc.md</span>
@@ -160,6 +168,199 @@ tr.sum td{font-weight:600;border-top:2px solid var(--line);border-bottom:0}
 <tr><td><span class="pri p1">P1</span></td><td><a href="#charts">图表放宽与修复</a></td><td>折线图也能并排；四处现有问题</td></tr>
 </tbody></table></div>
 <p class="note">示意里的数字和项目名都是编的。示意只表达结构和交互，颜色、圆角、间距以 BokeMd 现有主题为准；示意里变坏的画成红色、变好的画成绿色，实际用哪套涨跌色跟随前端的全局配置。</p>
+</section>
+
+<section id="samples">
+<h2>完整样例</h2>
+<p>下面三篇是把新写法合起来用的完整答案。每篇给渲染效果示意和 Markdown 原文，原文可以复制或下载，直接当渲染器的测试输入。原文里折线图并排的写法依赖“图表放宽”那一项。</p>
+
+<h3>样例一：两款产品流水下滑的原因</h3>
+<p class="q">用到结论框、指标卡分组与对比值、选项卡、表格列类型与合计行。</p>
+<div class="demo">
+  <div class="lbl">渲染效果示意（标签可点）</div>
+  <div class="sumbox">两款产品本周流水都在下滑：项目 A <span class="bad">▼8.9%</span>，主要是新增付费减少；项目 B <span class="bad">▼12.3%</span>，集中在大额充值档。</div>
+  <div class="grp" style="margin-top:14px">项目 A</div>
+  <div class="kpis"><div class="kpi"><div class="t">流水</div><div class="v">128.4万</div><div class="c">上周 141.0万 <span class="bad">▼8.9%</span></div></div><div class="kpi"><div class="t">付费人数</div><div class="v">3,210</div><div class="c">上周 3,655 <span class="bad">▼12.2%</span></div></div></div>
+  <div class="grp">项目 B</div>
+  <div class="kpis"><div class="kpi"><div class="t">流水</div><div class="v">36.2万</div><div class="c">上周 41.3万 <span class="bad">▼12.3%</span></div></div><div class="kpi"><div class="t">付费人数</div><div class="v">1,084</div><div class="c">上周 1,102 <span class="bad">▼1.6%</span></div></div></div>
+  <h4>各自的原因</h4>
+  <div class="tabs" data-tabs>
+    <div class="tabbar" role="tablist"><button role="tab" aria-selected="true">项目 A</button><button role="tab" aria-selected="false">项目 B</button></div>
+    <div class="tabpane">
+      <p>新增付费人数连续 7 天走低，老用户付费人数持平。</p>
+      <div class="cols">
+        <div class="mk-line" data-t="新增付费人数" data-v="560,540,470,430,410,400,380"></div>
+        <div class="mk-line" data-t="老用户付费人数" data-min="700" data-v="1210,1190,1230,1200,1220,1190,1215"></div>
+      </div>
+    </div>
+    <div class="tabpane" hidden>
+      <p>下滑集中在 648 元和 328 元两档，30 元及以下持平。</p>
+      <div class="tbl"><table>
+        <thead><tr><th>充值档位</th><th class="num">本周（万）</th><th class="num">上周（万）</th><th class="num">环比</th></tr></thead>
+        <tbody>
+          <tr class="hl"><td>648 元</td><td class="num"><div class="dbar"><span><i style="width:54%"></i></span>9.8</div></td><td class="num">14.2</td><td class="num bad">▼31.0%</td></tr>
+          <tr><td>328 元</td><td class="num"><div class="dbar"><span><i style="width:44%"></i></span>8.1</div></td><td class="num">9.0</td><td class="num bad">▼10.0%</td></tr>
+          <tr><td>30 元及以下</td><td class="num"><div class="dbar"><span><i style="width:100%"></i></span>18.3</div></td><td class="num">18.1</td><td class="num good">▲1.1%</td></tr>
+          <tr class="sum"><td>合计</td><td class="num">36.2</td><td class="num">41.3</td><td class="num bad">▼12.3%</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+  <div class="callout">两个项目的下滑原因不同，不建议合并成一个数看。</div>
+</div>
+<details class="src"><summary>这篇答案的 Markdown 原文</summary><div class="code" data-file="sample-1-two-projects.md"><div class="lbl">Markdown 原文</div><pre>:::summary
+两款产品本周流水都在下滑：项目 A &lt;text trend="down"&gt;-8.9%&lt;/text&gt;，主要是新增付费减少；项目 B &lt;text trend="down"&gt;-12.3%&lt;/text&gt;，集中在大额充值档。
+:::
+
+```kpi
+[
+  {"group": "项目 A", "title": "流水", "value": "128.4万",
+   "compare": {"label": "上周", "value": "141.0万", "delta": "-8.9%"}},
+  {"group": "项目 A", "title": "付费人数", "value": "3,210",
+   "compare": {"label": "上周", "value": "3,655", "delta": "-12.2%"}},
+  {"group": "项目 B", "title": "流水", "value": "36.2万",
+   "compare": {"label": "上周", "value": "41.3万", "delta": "-12.3%"}},
+  {"group": "项目 B", "title": "付费人数", "value": "1,084",
+   "compare": {"label": "上周", "value": "1,102", "delta": "-1.6%"}}
+]
+```
+
+## 各自的原因
+
+:::tabs
+::tab 项目 A
+新增付费人数连续 7 天走低，老用户付费人数持平。
+
+```echarts
+[[
+  {"title":{"text":"新增付费人数"},"xAxis":{"type":"category","data":["11-04","11-05","11-06","11-07","11-08","11-09","11-10"]},"yAxis":{"type":"value"},"series":[{"type":"line","data":[560,540,470,430,410,400,380]}]},
+  {"title":{"text":"老用户付费人数"},"xAxis":{"type":"category","data":["11-04","11-05","11-06","11-07","11-08","11-09","11-10"]},"yAxis":{"type":"value"},"series":[{"type":"line","data":[1210,1190,1230,1200,1220,1190,1215]}]}
+]]
+```
+
+::tab 项目 B
+下滑集中在 648 元和 328 元两档，30 元及以下持平。
+
+```tables
+{
+  "columns": [
+    {"prop": "tier", "label": "充值档位"},
+    {"prop": "cur", "label": "本周（万）", "type": "bar"},
+    {"prop": "prev", "label": "上周（万）", "type": "number"},
+    {"prop": "wow", "label": "环比", "type": "delta"}
+  ],
+  "data": [
+    {"tier": "648 元", "cur": 9.8, "prev": 14.2, "wow": "-31.0%", "_highlight": true},
+    {"tier": "328 元", "cur": 8.1, "prev": 9.0, "wow": "-10.0%"},
+    {"tier": "30 元及以下", "cur": 18.3, "prev": 18.1, "wow": "+1.1%"}
+  ],
+  "summary": {"tier": "合计", "cur": 36.2, "prev": 41.3, "wow": "-12.3%"}
+}
+```
+:::
+
+&gt; [!NOTE]
+&gt; 两个项目的下滑原因不同，不建议合并成一个数看。</pre></div></details>
+
+<h3>样例二：本周和上周对比，再拆到渠道</h3>
+<p class="q">用到结论框、分栏、分组表头、数据条、迷你走势、反转涨跌色、行高亮、合计行、口径悬停。</p>
+<div class="demo">
+  <div class="lbl">渲染效果示意</div>
+  <div class="sumbox">本周流水 128.4 万，环比 <span class="bad">▼8.9%</span>。下滑几乎全部来自渠道 A。</div>
+  <div class="cols" style="margin-top:14px">
+    <div><div class="col-t">本周</div><div class="kpis"><div class="kpi"><div class="t">流水</div><div class="v">128.4万</div></div><div class="kpi"><div class="t">付费人数</div><div class="v">3,210</div></div></div></div>
+    <div><div class="col-t">上周</div><div class="kpis"><div class="kpi"><div class="t">流水</div><div class="v">141.0万</div></div><div class="kpi"><div class="t">付费人数</div><div class="v">3,655</div></div></div></div>
+  </div>
+  <h4>分渠道</h4>
+  <div class="tbl"><table>
+    <thead>
+      <tr><th rowspan="2">渠道</th><th colspan="2" class="grp-h">本周</th><th rowspan="2">近 7 日</th><th rowspan="2" class="num">流失率变化</th></tr>
+      <tr><th class="num">流水（万）▾</th><th class="num">环比</th></tr>
+    </thead>
+    <tbody><tr class="hl"><td>渠道 A</td><td class="num"><div class="dbar"><span><i style="width:100%"></i></span>52.1</div></td><td class="num bad">▼18.0%</td><td><span class="spark" data-v="8.6,8.2,7.9,7.4,7.0,6.6,6.4"></span></td><td class="num bad">▲2.1pt</td></tr><tr><td>渠道 B</td><td class="num"><div class="dbar"><span><i style="width:60%"></i></span>31.4</div></td><td class="num good">▲1.6%</td><td><span class="spark" data-v="4.3,4.4,4.6,4.4,4.5,4.6,4.6"></span></td><td class="num good">▼0.4pt</td></tr><tr><td>渠道 C</td><td class="num"><div class="dbar"><span><i style="width:44%"></i></span>22.8</div></td><td class="num bad">▼2.6%</td><td><span class="spark" data-v="3.4,3.3,3.2,3.3,3.2,3.2,3.2"></span></td><td class="num bad">▲0.2pt</td></tr><tr><td>渠道 D</td><td class="num"><div class="dbar"><span><i style="width:28%"></i></span>14.6</div></td><td class="num bad">▼2.7%</td><td><span class="spark" data-v="2.1,2.1,2.1,2.1,2.1,2.0,2.1"></span></td><td class="num bad">▲0.1pt</td></tr><tr><td>渠道 E</td><td class="num"><div class="dbar"><span><i style="width:14%"></i></span>7.5</div></td><td class="num bad">▼8.5%</td><td><span class="spark" data-v="1.2,1.2,1.1,1.1,1.0,1.0,0.9"></span></td><td class="num bad">▲0.5pt</td></tr><tr class="sum"><td>合计</td><td class="num">128.4</td><td class="num bad">▼8.9%</td><td></td><td></td></tr></tbody>
+  </table></div>
+  <p>本周 <span class="term" tabindex="0" data-tip="付费金额 ÷ 付费人数，不含退款">ARPPU</span> 为 400 元，比上周 <span class="good">▲3.7%</span>。下滑来自付费人数减少，不是单人付费变少。</p>
+</div>
+<details class="src"><summary>这篇答案的 Markdown 原文</summary><div class="code" data-file="sample-2-week-compare.md"><div class="lbl">Markdown 原文</div><pre>:::summary
+本周流水 128.4 万，环比 &lt;text trend="down"&gt;-8.9%&lt;/text&gt;。下滑几乎全部来自渠道 A。
+:::
+
+:::columns
+::col 本周
+```kpi
+[{"title": "流水", "value": "128.4万"}, {"title": "付费人数", "value": "3,210"}]
+```
+
+::col 上周
+```kpi
+[{"title": "流水", "value": "141.0万"}, {"title": "付费人数", "value": "3,655"}]
+```
+:::
+
+## 分渠道
+
+```tables
+{
+  "columns": [
+    {"prop": "channel", "label": "渠道"},
+    {"label": "本周", "children": [
+      {"prop": "rev", "label": "流水（万）", "type": "bar"},
+      {"prop": "wow", "label": "环比", "type": "delta"}
+    ]},
+    {"prop": "trend", "label": "近 7 日", "type": "spark"},
+    {"prop": "churn", "label": "流失率变化", "type": "delta", "tone": "inverse"}
+  ],
+  "data": [
+    {"channel": "渠道 A", "rev": 52.1, "wow": "-18.0%", "trend": [8.6,8.2,7.9,7.4,7.0,6.6,6.4], "churn": "+2.1pt", "_highlight": true},
+    {"channel": "渠道 B", "rev": 31.4, "wow": "+1.6%", "trend": [4.3,4.4,4.6,4.4,4.5,4.6,4.6], "churn": "-0.4pt"},
+    {"channel": "渠道 C", "rev": 22.8, "wow": "-2.6%", "trend": [3.4,3.3,3.2,3.3,3.2,3.2,3.2], "churn": "+0.2pt"},
+    {"channel": "渠道 D", "rev": 14.6, "wow": "-2.7%", "trend": [2.1,2.1,2.1,2.1,2.1,2.0,2.1], "churn": "+0.1pt"},
+    {"channel": "渠道 E", "rev": 7.5, "wow": "-8.5%", "trend": [1.2,1.2,1.1,1.1,1.0,1.0,0.9], "churn": "+0.5pt"}
+  ],
+  "summary": {"channel": "合计", "rev": 128.4, "wow": "-8.9%"},
+  "defaultSort": {"prop": "rev", "order": "descending"}
+}
+```
+
+本周 &lt;term tip="付费金额 ÷ 付费人数，不含退款"&gt;ARPPU&lt;/term&gt; 为 400 元，比上周 &lt;text trend="up"&gt;+3.7%&lt;/text&gt;。下滑来自付费人数减少，不是单人付费变少。</pre></div></details>
+
+<h3>样例三：哪天开始掉的，可能和什么有关</h3>
+<p class="q">用到结论框、时间线、折线图并排，以及已有的警告提示块。</p>
+<div class="demo">
+  <div class="lbl">渲染效果示意</div>
+  <div class="sumbox">11-07 起新增付费明显下滑，时间上和渠道 A 暂停投放吻合；版本发布之后没有进一步变差。</div>
+  <ul class="tl" style="margin-top:16px">
+    <li><span class="dt">11-03</span><span class="dot pos"></span><div>预热活动上线</div></li>
+    <li><span class="dt">11-06</span><span class="dot neg"></span><div>渠道 A 投放暂停<div class="ds">新增付费从次日起下滑</div></div></li>
+    <li><span class="dt">11-08</span><span class="dot"></span><div>版本 3.2.1 发布<div class="ds">发布后新增付费没有进一步变差</div></div></li>
+  </ul>
+  <div class="cols">
+    <div class="mk-line" data-t="新增付费人数" data-v="552,548,555,470,430,405,398"></div>
+    <div class="mk-line" data-t="流水（万）" data-v="20.6,20.4,20.7,18.9,18.2,17.6,17.4"></div>
+  </div>
+  <div class="callout warn">投放暂停和下滑只是时间上吻合，没有做对照，不能当作已证实的因果。</div>
+</div>
+<details class="src"><summary>这篇答案的 Markdown 原文</summary><div class="code" data-file="sample-3-timeline.md"><div class="lbl">Markdown 原文</div><pre>:::summary
+11-07 起新增付费明显下滑，时间上和渠道 A 暂停投放吻合；版本发布之后没有进一步变差。
+:::
+
+```timeline
+[
+  {"date": "11-03", "title": "预热活动上线", "tone": "positive"},
+  {"date": "11-06", "title": "渠道 A 投放暂停", "desc": "新增付费从次日起下滑", "tone": "negative"},
+  {"date": "11-08", "title": "版本 3.2.1 发布", "desc": "发布后新增付费没有进一步变差"}
+]
+```
+
+```echarts
+[[
+  {"title":{"text":"新增付费人数"},"xAxis":{"type":"category","data":["11-04","11-05","11-06","11-07","11-08","11-09","11-10"]},"yAxis":{"type":"value"},"series":[{"type":"line","data":[552,548,555,470,430,405,398]}]},
+  {"title":{"text":"流水（万）"},"xAxis":{"type":"category","data":["11-04","11-05","11-06","11-07","11-08","11-09","11-10"]},"yAxis":{"type":"value"},"series":[{"type":"line","data":[20.6,20.4,20.7,18.9,18.2,17.6,17.4]}]}
+]]
+```
+
+&gt; [!WARNING]
+&gt; 投放暂停和下滑只是时间上吻合，没有做对照，不能当作已证实的因果。</pre></div></details>
 </section>
 
 <section id="tabs">
@@ -279,7 +480,7 @@ tr.sum td{font-weight:600;border-top:2px solid var(--line);border-bottom:0}
 <tr><td><code>percent</code></td><td>同上</td><td>右对齐，原样显示</td></tr>
 <tr><td><code>delta</code></td><td>带符号的变化，如 <code>-12.3%</code></td><td>按正负着色，前面加 ▲ 或 ▼</td></tr>
 <tr><td><code>bar</code></td><td>数字</td><td>格内数据条，长度按本列最大绝对值的比例，旁边仍显示数字；负值向左</td></tr>
-<tr><td><code>spark</code></td><td>数字数组</td><td>格内迷你走势线（约 80×24px），悬停显示每点数值</td></tr>
+<tr><td><code>spark</code></td><td>数字数组</td><td>格内迷你走势线（约 80×24px），悬停显示每点数值；每行单独缩放，纵轴从 0 起，小波动不要画成大起伏</td></tr>
 </tbody></table></div>
 <ul>
 <li>涨跌配色可以按列反转：<code>"tone":"inverse"</code> 表示涨是坏事，如流失率、退款率。上面示意的最后一列就是这样。</li>
@@ -464,6 +665,9 @@ document.querySelectorAll('.code').forEach(function(box){
   var b=document.createElement('button');b.className='copy';b.type='button';b.textContent='复制';
   b.onclick=function(){navigator.clipboard.writeText(box.querySelector('pre').textContent).then(function(){b.textContent='已复制';setTimeout(function(){b.textContent='复制'},1200)})};
   box.appendChild(b);
+  if(box.dataset.file){var d=document.createElement('button');d.className='copy dl';d.type='button';d.textContent='下载 .md';
+    d.onclick=function(){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([box.querySelector('pre').textContent],{type:'text/markdown'}));a.download=box.dataset.file;a.click();setTimeout(function(){URL.revokeObjectURL(a.href)},500)};
+    box.appendChild(d)}
 });
 // 选项卡示意
 document.querySelectorAll('[data-tabs]').forEach(function(t){
@@ -490,7 +694,7 @@ drawLines();
 var rz;window.addEventListener('resize',function(){clearTimeout(rz);rz=setTimeout(drawLines,150)});
 // 表格里的迷你走势
 document.querySelectorAll('.spark').forEach(function(el){
-  var v=el.dataset.v.split(',').map(Number),p=scale(v,80,24,2,2,3,3);
+  var v=el.dataset.v.split(',').map(Number),p=scale(v,80,24,2,2,3,3,0);
   el.innerHTML='<svg width="80" height="24" viewBox="0 0 80 24" role="img" aria-label="近 7 日走势"><path d="M'+p.map(function(q){return q[0].toFixed(1)+','+q[1].toFixed(1)}).join(' L')+'" style="fill:none;stroke:var(--accent);stroke-width:1.5"/></svg>';
 });
 // 图例单选示意
