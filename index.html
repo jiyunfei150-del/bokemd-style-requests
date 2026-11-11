@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BokeMd 新增样式需求</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* 布局：与接口手册同一套——桌面左侧目录吸顶 + 右侧正文；手机单列。每项需求 = 为什么要 + 效果示意(可点) + 写法 + 规则 */
+:root{
+  --bg:#f6f7f8; --panel:#ffffff; --fg:#1d2328; --muted:#5b6670; --line:#dde2e6;
+  --accent:#0f6b73; --accent-soft:#e3f1f2; --code-bg:#f0f2f4; --code-fg:#23303a;
+  --bad:#c8372d; --good:#17804f; --p0:#a4391b; --p1:#2957a4; --warn-bg:#fff6e5; --warn-fg:#7a4b00; --hl:#fff8e1;
+  --sans:"IBM Plex Sans","PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12171b; --panel:#182026; --fg:#e4e9ec; --muted:#9aa7b0; --line:#2a353d;
+  --accent:#5fc3cb; --accent-soft:#16333a; --code-bg:#0f1418; --code-fg:#d6e0e6;
+  --bad:#f0776c; --good:#5bc48b; --p0:#e58a6c; --p1:#7ea6ea; --warn-bg:#2f2614; --warn-fg:#f0c77a; --hl:#2b2714; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12171b; --panel:#182026; --fg:#e4e9ec; --muted:#9aa7b0; --line:#2a353d;
+  --accent:#5fc3cb; --accent-soft:#16333a; --code-bg:#0f1418; --code-fg:#d6e0e6;
+  --bad:#f0776c; --good:#5bc48b; --p0:#e58a6c; --p1:#7ea6ea; --warn-bg:#2f2614; --warn-fg:#f0c77a; --hl:#2b2714; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.7;margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:32px 64px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:40px}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);align-self:start;font-size:13.5px}
+nav.toc .brand{font-weight:600;color:var(--accent);letter-spacing:.04em;font-size:12px;margin-bottom:12px}
+nav.toc a{display:block;color:var(--muted);text-decoration:none;padding:5px 10px;border-left:2px solid var(--line)}
+nav.toc a:hover,nav.toc a:focus-visible{color:var(--fg);border-left-color:var(--accent);outline:none}
+main{min-width:0}
+main a{color:var(--accent);text-underline-offset:3px}
+header.top h1{font-size:30px;line-height:1.25;margin:0 0 8px;text-wrap:balance;font-weight:600}
+header.top p.lead{color:var(--muted);margin:0 0 18px;max-width:66ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.chip{font-size:12.5px;border:1px solid var(--line);border-radius:999px;padding:2px 10px;color:var(--muted);background:var(--panel)}
+.chip b{color:var(--fg);font-weight:500}
+h2{font-size:21px;margin:56px 0 12px;padding-top:8px;text-wrap:balance;font-weight:600;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+h3{font-size:16px;margin:26px 0 8px;font-weight:600}
+p,li{max-width:72ch}
+ul{padding-left:20px}
+code{font-family:var(--mono);font-size:.9em;background:var(--code-bg);color:var(--code-fg);padding:1px 5px;border-radius:4px}
+.pri{font-family:var(--mono);font-size:12px;font-weight:500;padding:2px 8px;border-radius:5px;color:#fff;letter-spacing:.03em}
+.pri.p0{background:var(--p0)} .pri.p1{background:var(--p1)}
+:root[data-theme="dark"] .pri{color:#0d1216}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pri{color:#0d1216}}
+.code{position:relative;margin:10px 0}
+.lbl{font-size:12px;color:var(--muted);margin-bottom:4px;letter-spacing:.03em}
+pre{margin:0;background:var(--code-bg);color:var(--code-fg);border-radius:8px;padding:14px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.6}
+.copy{position:absolute;top:24px;right:8px;font:12px var(--sans);border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:6px;padding:2px 9px;cursor:pointer}
+.copy:hover,.copy:focus-visible{color:var(--fg);border-color:var(--accent);outline:none}
+.tbl{overflow-x:auto;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{font-weight:600;color:var(--muted);font-size:12.5px;letter-spacing:.03em}
+td code{white-space:nowrap}
+.note{border-left:3px solid var(--accent);padding:4px 0 4px 12px;margin:12px 0;color:var(--fg)}
+footer{margin-top:56px;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:14px}
+@media (max-width:860px){.wrap{grid-template-columns:1fr;gap:16px} nav.toc{position:static}}
+
+/* —— 效果示意用的样式（只表达结构和交互，视觉以 BokeMd 现有主题为准）—— */
+.demo{border:1px dashed var(--line);border-radius:10px;padding:16px;background:var(--panel);margin:12px 0}
+.demo p{margin:8px 0}
+.tabs{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.tabbar{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);padding:0 8px;background:var(--bg)}
+.tabbar button{font:inherit;font-size:14px;border:0;background:none;color:var(--muted);padding:10px 12px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.tabbar button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+.tabbar button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.tabpane{padding:16px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:720px){.cols,.cols3{grid-template-columns:1fr}}
+.col-t{font-weight:600;font-size:14px;margin-bottom:8px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:8px 0}
+.kpi{border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:var(--panel)}
+.kpi .t{font-size:12.5px;color:var(--muted)}
+.kpi .v{font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.4}
+.kpi .c{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.kpi .g{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:8px}
+.prog{height:6px;border-radius:3px;background:var(--code-bg);margin-top:4px}
+.prog i{display:block;height:100%;border-radius:3px;background:var(--accent)}
+.grp{font-size:13px;font-weight:600;margin:14px 0 2px}
+.grp:first-child{margin-top:0}
+.bad{color:var(--bad)} .good{color:var(--good)}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+th.num{text-align:right} th.grp-h{text-align:center;border-left:1px solid var(--line);border-right:1px solid var(--line)}
+.dbar{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.dbar span{flex:1;min-width:60px;height:8px;border-radius:2px;background:var(--code-bg)}
+.dbar i{display:block;height:100%;border-radius:2px;background:var(--accent)}
+tr.hl td{background:var(--hl)}
+tr.sum td{font-weight:600;border-top:2px solid var(--line);border-bottom:0}
+.spark{display:inline-block;vertical-align:middle}
+.term{border-bottom:1px dashed var(--muted);cursor:help;position:relative}
+.term:hover::after,.term:focus::after{content:attr(data-tip);position:absolute;left:0;top:calc(100% + 6px);z-index:2;width:max-content;max-width:240px;background:var(--fg);color:var(--bg);font-size:12.5px;line-height:1.5;padding:6px 10px;border-radius:6px}
+.sumbox{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:6px;padding:12px 16px;font-size:16px}
+.tl{list-style:none;padding:0;margin:0}
+.tl li{display:grid;grid-template-columns:48px 12px minmax(0,1fr);gap:10px;position:relative;padding-bottom:14px;max-width:none}
+.tl li:not(:last-child)::before{content:"";position:absolute;left:63.5px;top:16px;bottom:-8px;width:1px;background:var(--line)}
+.tl .dt{font-family:var(--mono);font-size:12.5px;color:var(--muted);padding-top:2px}
+.tl .dot{width:10px;height:10px;border-radius:50%;margin-top:8px;background:var(--muted);position:relative;z-index:1}
+.tl .dot.pos{background:var(--good)} .tl .dot.neg{background:var(--bad)}
+.tl .ds{font-size:13px;color:var(--muted)}
+.mk-t{font-size:13px;font-weight:600;margin-bottom:2px}
+.mk-line svg{width:100%;height:130px;display:block}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin:6px 0 10px}
+.legend button{font:inherit;font-size:13px;border:0;background:none;padding:2px 0;cursor:pointer;color:var(--muted);opacity:.55;display:flex;align-items:center;gap:6px}
+.legend button::before{content:"";width:12px;height:12px;border-radius:3px;background:currentColor}
+.legend button[aria-pressed="true"]{color:var(--accent);opacity:1}
+.legend button[aria-pressed="true"] b{color:var(--fg);font-weight:500}
+.legend button b{font-weight:400}
+.hb{display:grid;grid-template-columns:60px minmax(0,1fr) 64px;gap:8px;align-items:center;font-size:13px;margin:6px 0}
+.hb span{height:14px;border-radius:3px;background:var(--code-bg)}
+.hb i{display:block;height:100%;border-radius:3px;background:var(--accent);transition:width .2s}
+@media (prefers-reduced-motion: reduce){.hb i{transition:none}}
+.hb em{font-style:normal;text-align:right;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="toc" aria-label="目录">
+  <div class="brand">BokeMd 新增样式</div>
+  <a href="#overview">一览</a>
+  <a href="#tabs">选项卡 :::tabs</a>
+  <a href="#columns">分栏 :::columns</a>
+  <a href="#tables">表格增强</a>
+  <a href="#kpi">指标卡增强</a>
+  <a href="#inline">涨跌标记与口径悬停</a>
+  <a href="#summary">结论框与时间线</a>
+  <a href="#charts">图表放宽与修复</a>
+  <a href="#common">共同要求</a>
+  <a href="#reply">需要前端回复的</a>
+</nav>
+<main>
+<header class="top">
+  <h1>BokeMd 新增样式需求</h1>
+  <p class="lead">问数结论现在只能用正文、表格、指标卡、图表和折叠块来排。遇到“两个项目各说各的”“左右对比”“一张表里看涨跌”这些常见场景，只能上下堆着放。这份文档列出后端希望渲染器新增的写法，每项都带可点的效果示意。</p>
+  <div class="meta">
+    <span class="chip"><b>写给</b> BokeMd 渲染器负责人</span>
+    <span class="chip"><b>契约</b> markdown.doc.md</span>
+    <span class="chip"><b>日期</b> 2026-11-11</span>
+    <span class="chip"><b>提出</b> 问数后端</span>
+  </div>
+</header>
+
+<section id="overview">
+<h2>一览</h2>
+<p>所有新写法都是在现有契约上加可选项：不写就和现在一样，旧版前端遇到不认识的字段忽略即可。后端的接入顺序是前端上线一项，后端接一项。</p>
+<div class="tbl"><table>
+<thead><tr><th>优先级</th><th>新增</th><th>解决什么</th></tr></thead>
+<tbody>
+<tr><td><span class="pri p0">P0</span></td><td><a href="#tabs">选项卡 <code>:::tabs</code></a></td><td>多个项目、多个时段各说各的，一个框里点着切换</td></tr>
+<tr><td><span class="pri p0">P0</span></td><td><a href="#columns">分栏 <code>:::columns</code></a></td><td>A 和 B 左右并排，一眼对比</td></tr>
+<tr><td><span class="pri p0">P0</span></td><td><a href="#tables">表格列类型</a></td><td>涨跌着色、格内数据条、格内迷你走势</td></tr>
+<tr><td><span class="pri p0">P0</span></td><td><a href="#tables">表格合计行、分组表头、默认排序、行高亮</a></td><td>现在的表头只有一层，没有合计行</td></tr>
+<tr><td><span class="pri p1">P1</span></td><td><a href="#kpi">指标卡分组、对比值、目标进度</a></td><td>多项目的卡片混在一行，对比只能写在说明里</td></tr>
+<tr><td><span class="pri p1">P1</span></td><td><a href="#inline">正文涨跌标记、口径悬停</a></td><td>颜色由前端按主题定，口径不用堆在正文里</td></tr>
+<tr><td><span class="pri p1">P1</span></td><td><a href="#summary">结论框 <code>:::summary</code>、时间线 <code>timeline</code></a></td><td>答案先被看到；事件序列有专门的样子</td></tr>
+<tr><td><span class="pri p1">P1</span></td><td><a href="#charts">图表放宽与修复</a></td><td>折线图也能并排；四处现有问题</td></tr>
+</tbody></table></div>
+<p class="note">示意里的数字和项目名都是编的。示意只表达结构和交互，颜色、圆角、间距以 BokeMd 现有主题为准；示意里变坏的画成红色、变好的画成绿色，实际用哪套涨跌色跟随前端的全局配置。</p>
+</section>
+
+<section id="tabs">
+<h2><span class="pri p0">P0</span>选项卡 <code>:::tabs</code></h2>
+<p>一个框里放几段平行的内容，顶部是标签，点哪个显示哪段。典型场景是“两款产品流水下滑的原因”：项目 A 是三张走势图，项目 B 是一张充值明细表，现在只能上下接着堆。本周和上周、iOS 和安卓、新用户和老用户也是这一类。</p>
+<div class="demo">
+  <div class="lbl">效果示意（可点）</div>
+  <div class="tabs" data-tabs>
+    <div class="tabbar" role="tablist">
+      <button role="tab" aria-selected="true">项目 A</button>
+      <button role="tab" aria-selected="false">项目 B</button>
+    </div>
+    <div class="tabpane">
+      <p>流水下滑主要来自新增付费减少，老用户付费稳定。</p>
+      <div class="cols3">
+        <div class="mk-line" data-t="流水（万）" data-v="21,20,19,18,17,17,16"></div>
+        <div class="mk-line" data-t="新增付费人数" data-v="560,540,470,430,410,400,380"></div>
+        <div class="mk-line" data-t="老用户付费人数" data-min="700" data-v="1210,1190,1230,1200,1220,1190,1215"></div>
+      </div>
+    </div>
+    <div class="tabpane" hidden>
+      <p>下滑集中在大额充值档，小额档持平。</p>
+      <div class="tbl"><table>
+        <thead><tr><th>充值档位</th><th class="num">本周（万）</th><th class="num">上周（万）</th><th class="num">环比</th></tr></thead>
+        <tbody>
+          <tr><td>648 元</td><td class="num">9.8</td><td class="num">14.2</td><td class="num bad">▼31.0%</td></tr>
+          <tr><td>328 元</td><td class="num">8.1</td><td class="num">9.0</td><td class="num bad">▼10.0%</td></tr>
+          <tr><td>30 元及以下</td><td class="num">18.3</td><td class="num">18.1</td><td class="num good">▲1.1%</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+<div class="code"><div class="lbl">写法</div><pre>:::tabs
+::tab 项目 A
+这个项目的正文、kpi、echarts、tables，写法和外面一样。
+
+::tab 项目 B
+……
+:::</pre></div>
+<ul>
+<li><code>::tab</code> 后面是标签名，纯文本，过长省略。默认选中第一个。</li>
+<li>标签 2 到 6 个。一行排开，放不下时横向滚动；手机端同样横滚，不要改成上下堆。</li>
+<li>标签里可以放选项卡以外的所有写法，包括 <code>:::collapse</code>；不嵌套选项卡。</li>
+<li>切换标签时，里面的图要重新量宽度。隐藏状态下初始化的 ECharts 宽度是 0。</li>
+<li>流式：每出现一个 <code>::tab</code> 就加一个标签。内容还在生成时停在第一个标签，新标签上显示小圆点表示有新内容，不要自动跳过去。</li>
+<li>复制、导出、打印时按标签顺序全部展开，每段前加标签名做小标题。</li>
+</ul>
+<p class="note">后端的用法：结论和两边的对比写在选项卡外面，只把各自展开的部分放进去。结论和必读警告不会藏进标签里。</p>
+</section>
+
+<section id="columns">
+<h2><span class="pri p0">P0</span>分栏 <code>:::columns</code></h2>
+<p>选项卡是一次看一个，分栏是并排一起看。A/B 两组、本周和上周、两个项目的同一组指标，用户要的是左右一眼对比，不想来回点。</p>
+<div class="demo">
+  <div class="lbl">效果示意（窗口变窄时改为上下堆叠）</div>
+  <div class="cols">
+    <div>
+      <div class="col-t">本周</div>
+      <div class="kpis"><div class="kpi"><div class="t">流水</div><div class="v">128.4万</div></div><div class="kpi"><div class="t">付费率</div><div class="v">4.1%</div></div></div>
+      <ul><li>新增付费 3,210 人</li><li>大额档占比 31%</li></ul>
+    </div>
+    <div>
+      <div class="col-t">上周</div>
+      <div class="kpis"><div class="kpi"><div class="t">流水</div><div class="v">141.0万</div></div><div class="kpi"><div class="t">付费率</div><div class="v">4.4%</div></div></div>
+      <ul><li>新增付费 3,655 人</li><li>大额档占比 36%</li></ul>
+    </div>
+  </div>
+</div>
+<div class="code"><div class="lbl">写法</div><pre>:::columns
+::col 本周
+```kpi
+[{"title":"流水","value":"128.4万"},{"title":"付费率","value":"4.1%"}]
+```
+- 新增付费 3,210 人
+
+::col 上周
+```kpi
+[{"title":"流水","value":"141.0万"},{"title":"付费率","value":"4.4%"}]
+```
+- 新增付费 3,655 人
+:::</pre></div>
+<ul>
+<li><code>::col</code> 后的标题可省略；有标题时显示为栏顶小标题。</li>
+<li>默认 2 栏，最多 3 栏，等宽。可选写法 <code>:::columns 2:1</code> 指定宽度比例。</li>
+<li>栏内可以放正文、列表、kpi、表格和图；不嵌套分栏或选项卡。</li>
+<li>容器宽度不足（如小于 720px）或手机端时，自动改为上下堆叠，标题保留。</li>
+<li>两栏里的同类块顶部对齐；高度不同时不必拉平。</li>
+<li>栏里的图按栏宽量尺寸，不沿用整行宽。</li>
+</ul>
+<p class="note">后端的用法：只在两边结构相同、需要逐项对照时用分栏；结构不同的内容用选项卡或上下排。</p>
+</section>
+
+<section id="tables">
+<h2><span class="pri p0">P0</span>表格 <code>tables</code> 增强</h2>
+<p>问数结论里表格最多。现在每一格都是一样的文字，用户要自己比数字大小、分辨涨跌。下面都是在现有 JSON 上加可选字段。</p>
+<div class="demo">
+  <div class="lbl">效果示意：分组表头、数据条、涨跌色、迷你走势、行高亮、合计行</div>
+  <div class="tbl"><table>
+    <thead>
+      <tr><th rowspan="2">渠道</th><th colspan="2" class="grp-h">本周</th><th rowspan="2">近 7 日</th><th rowspan="2" class="num">流失率变化</th></tr>
+      <tr><th class="num">流水 ▾</th><th class="num">环比</th></tr>
+    </thead>
+    <tbody>
+      <tr class="hl"><td>渠道 A</td><td class="num"><div class="dbar"><span><i style="width:100%"></i></span>52,100</div></td><td class="num bad">▼12.3%</td><td><span class="spark" data-v="8,7,7,6,7,6,5"></span></td><td class="num bad">▲2.1pt</td></tr>
+      <tr><td>渠道 B</td><td class="num"><div class="dbar"><span><i style="width:60%"></i></span>31,400</div></td><td class="num good">▲3.4%</td><td><span class="spark" data-v="4,4,5,4,5,5,5"></span></td><td class="num good">▼0.4pt</td></tr>
+      <tr><td>渠道 C</td><td class="num"><div class="dbar"><span><i style="width:44%"></i></span>22,800</div></td><td class="num bad">▼5.0%</td><td><span class="spark" data-v="4,4,3,4,3,3,3"></span></td><td class="num">—</td></tr>
+      <tr class="sum"><td>合计</td><td class="num">106,300</td><td class="num bad">▼6.6%</td><td></td><td class="num"></td></tr>
+    </tbody>
+  </table></div>
+</div>
+<h3>列类型 <code>columns[].type</code></h3>
+<div class="tbl"><table>
+<thead><tr><th>type</th><th>数据</th><th>显示</th></tr></thead>
+<tbody>
+<tr><td><code>number</code></td><td>数字，或已格式化的字符串</td><td>右对齐、等宽数字（<code>tabular-nums</code>）</td></tr>
+<tr><td><code>percent</code></td><td>同上</td><td>右对齐，原样显示</td></tr>
+<tr><td><code>delta</code></td><td>带符号的变化，如 <code>-12.3%</code></td><td>按正负着色，前面加 ▲ 或 ▼</td></tr>
+<tr><td><code>bar</code></td><td>数字</td><td>格内数据条，长度按本列最大绝对值的比例，旁边仍显示数字；负值向左</td></tr>
+<tr><td><code>spark</code></td><td>数字数组</td><td>格内迷你走势线（约 80×24px），悬停显示每点数值</td></tr>
+</tbody></table></div>
+<ul>
+<li>涨跌配色可以按列反转：<code>"tone":"inverse"</code> 表示涨是坏事，如流失率、退款率。上面示意的最后一列就是这样。</li>
+<li>红涨绿跌还是绿涨红跌，由前端的全局配置决定，后端不传颜色。</li>
+<li><code>delta</code> 和 <code>bar</code> 的值解析不了（如 <code>—</code>、<code>新增</code>）时原样显示，不报错。</li>
+</ul>
+<h3>合计行、分组表头、默认排序、行高亮</h3>
+<div class="code"><div class="lbl">写法</div><pre>{
+  "columns": [
+    {"prop": "channel", "label": "渠道"},
+    {"label": "本周", "children": [
+      {"prop": "rev", "label": "流水", "type": "bar"},
+      {"prop": "rev_wow", "label": "环比", "type": "delta"}
+    ]},
+    {"prop": "trend", "label": "近 7 日", "type": "spark"},
+    {"prop": "churn", "label": "流失率变化", "type": "delta", "tone": "inverse"}
+  ],
+  "data": [
+    {"channel": "渠道 A", "rev": 52100, "rev_wow": "-12.3%",
+     "trend": [8,7,7,6,7,6,5], "churn": "+2.1pt", "_highlight": true}
+  ],
+  "summary": {"channel": "合计", "rev": 106300, "rev_wow": "-6.6%"},
+  "defaultSort": {"prop": "rev", "order": "descending"}
+}</pre></div>
+<ul>
+<li><code>summary</code>：固定在表尾的合计行，加粗，不参与排序。值由后端给，前端不要自己求和，比率类指标不能相加。</li>
+<li><code>children</code>：两层表头即可，有 children 的列没有 prop。</li>
+<li><code>defaultSort</code>：初始排序，表头上显示箭头。</li>
+<li><code>_highlight</code>：行级标记，整行浅色底，用来标出异常行或结论里提到的行。以 <code>_</code> 开头的字段不当列显示。</li>
+</ul>
+</section>
+
+<section id="kpi">
+<h2><span class="pri p1">P1</span>指标卡 <code>kpi</code> 增强</h2>
+<p>两个项目各 4 张卡时，现在是 8 张混在一行，分不清哪张属于哪个项目。“比上周多少”“完成了目标的多少”也只能写在 <code>desc</code> 里。</p>
+<div class="demo">
+  <div class="lbl">效果示意：分组、对比值、目标进度</div>
+  <div class="grp">项目 A</div>
+  <div class="kpis">
+    <div class="kpi"><div class="t">流水</div><div class="v">128.4万</div><div class="c">上周 141.0万 <span class="bad">▼8.9%</span></div><div class="g"><span>月目标 600万</span><span>达成 62%</span></div><div class="prog"><i style="width:62%"></i></div></div>
+    <div class="kpi"><div class="t">付费人数</div><div class="v">3,210</div><div class="c">上周 3,655 <span class="bad">▼12.2%</span></div></div>
+  </div>
+  <div class="grp">项目 B</div>
+  <div class="kpis">
+    <div class="kpi"><div class="t">流水</div><div class="v">36.2万</div><div class="c">上周 41.3万 <span class="bad">▼12.3%</span></div><div class="g"><span>月目标 150万</span><span>达成 71%</span></div><div class="prog"><i style="width:71%"></i></div></div>
+    <div class="kpi"><div class="t">付费人数</div><div class="v">1,084</div><div class="c">上周 1,102 <span class="bad">▼1.6%</span></div></div>
+  </div>
+</div>
+<div class="code"><div class="lbl">写法</div><pre>[
+  {"group": "项目 A", "title": "流水", "value": "128.4万",
+   "compare": {"label": "上周", "value": "141.0万", "delta": "-8.9%"},
+   "target": {"label": "月目标", "value": "600万", "progress": 0.62}},
+  {"group": "项目 A", "title": "付费人数", "value": "3,210",
+   "compare": {"label": "上周", "value": "3,655", "delta": "-12.2%"}},
+  {"group": "项目 B", "title": "流水", "value": "36.2万"}
+]</pre></div>
+<ul>
+<li><code>group</code>：同一 group 的卡放在一起，组前显示组名小标题；不写 group 时和现在一样。</li>
+<li><code>compare</code>：在主值下方用小字显示“上周 141.0万 ▼8.9%”，着色规则同表格的 <code>delta</code>，同样支持 <code>tone</code>。有 compare 时忽略旧的 <code>trend</code> 字段。</li>
+<li><code>target.progress</code>：0 到 1 的小数，可以超过 1。卡片底部画进度条并写“达成 62%”；超过 1 时条拉满。</li>
+<li><code>compare</code>、<code>target</code> 和已有的 <code>points</code>（迷你走势）可以同时出现，从上到下依次是标题、主值、对比、走势、进度条。</li>
+</ul>
+</section>
+
+<section id="inline">
+<h2><span class="pri p1">P1</span>正文里的涨跌标记和口径悬停</h2>
+<p>正文里写“流水环比 -8.9%”时，后端现在只能用 <code>&lt;text color="#..."&gt;</code> 写死颜色，换了配色主题就不对。改成传语义，由前端决定颜色。</p>
+<div class="demo">
+  <div class="lbl">效果示意（把鼠标放到 ARPPU 上，手机端点一下）</div>
+  <p>流水环比 <span class="bad">▼8.9%</span>，流失率 <span class="bad">▲2.1pt</span>。本周 <span class="term" tabindex="0" data-tip="付费金额 ÷ 付费人数，不含退款">ARPPU</span> 为 38.6 元。</p>
+</div>
+<div class="code"><div class="lbl">写法</div><pre>流水环比 &lt;text trend="down"&gt;-8.9%&lt;/text&gt;，流失率 &lt;text trend="up" tone="inverse"&gt;+2.1pt&lt;/text&gt;。
+本周 &lt;term tip="付费金额 ÷ 付费人数，不含退款"&gt;ARPPU&lt;/term&gt; 为 38.6 元。</pre></div>
+<ul>
+<li><code>trend="up|down|flat"</code>：按全局涨跌色着色，前面加小箭头。<code>tone="inverse"</code> 反转好坏色，<code>tone="neutral"</code> 只加箭头不着色。</li>
+<li><code>&lt;term tip&gt;</code>：虚线下划线，桌面端悬停、手机端点击时显示口径说明。用户不用再追问“这个指标怎么算的”，口径也不用堆在正文里。</li>
+<li>两个标签在表格单元格和 kpi 的 <code>desc</code> 里也要生效。</li>
+<li>已有的 <code>&lt;text color&gt;</code> 保留，写了 color 时 color 优先。</li>
+</ul>
+</section>
+
+<section id="summary">
+<h2><span class="pri p1">P1</span>结论框 <code>:::summary</code> 与时间线 <code>timeline</code></h2>
+<h3>结论框</h3>
+<p>答案的第一段是结论，现在和后面的正文长得一样。加一个顶部结论框，让用户先看到答案。</p>
+<div class="demo">
+  <div class="lbl">效果示意</div>
+  <div class="sumbox">流水下滑 <span class="bad">▼8.9%</span>，主要来自渠道 A 的新增付费减少；老用户付费稳定。</div>
+</div>
+<div class="code"><div class="lbl">写法</div><pre>:::summary
+流水下滑 &lt;text trend="down"&gt;-8.9%&lt;/text&gt;，主要来自渠道 A 的新增付费减少；老用户付费稳定。
+:::</pre></div>
+<ul>
+<li>浅色底、左侧主题色竖条、字号比正文略大。不要和 <code>[!NOTE]</code> 长得一样。</li>
+<li>内容只有正文和列表，可以包含涨跌标记。一篇答案最多一个。</li>
+</ul>
+<h3>时间线</h3>
+<p>“为什么这几天下滑”的回答经常要列一串事件：哪天停了活动、哪天发了版本、哪天数据异常。现在只能写成列表或表格。</p>
+<div class="demo">
+  <div class="lbl">效果示意</div>
+  <ul class="tl">
+    <li><span class="dt">11-03</span><span class="dot pos"></span><div>预热活动上线</div></li>
+    <li><span class="dt">11-06</span><span class="dot neg"></span><div>渠道 A 投放暂停<div class="ds">新增付费从次日起下滑</div></div></li>
+    <li><span class="dt">11-08</span><span class="dot"></span><div>版本 3.2.1 发布</div></li>
+  </ul>
+</div>
+<div class="code"><div class="lbl">写法（代码块语言名为 timeline）</div><pre>```timeline
+[
+  {"date": "11-03", "title": "预热活动上线", "tone": "positive"},
+  {"date": "11-06", "title": "渠道 A 投放暂停", "desc": "新增付费从次日起下滑", "tone": "negative"},
+  {"date": "11-08", "title": "版本 3.2.1 发布"}
+]
+```</pre></div>
+<ul>
+<li>竖向时间线，左侧日期，右侧标题和说明。<code>tone</code> 取 <code>positive</code>、<code>negative</code>、<code>neutral</code>，只改节点圆点的颜色。</li>
+<li>条目超过 8 个时折叠，展开看全部。</li>
+<li>时间线和折线图的联动（事件在图上画竖线）这次不做，后端先用 ECharts 的 <code>markLine</code> 自己画。</li>
+</ul>
+</section>
+
+<section id="charts">
+<h2><span class="pri p1">P1</span>图表：放宽并排限制，修四处现有问题</h2>
+<h3>放宽</h3>
+<p><b>折线图也允许并排。</b>现在 <code>[[a,b]]</code> 一行两图只对饼图和不超过 8 个类目的柱图生效，折线图会被拆回单列。请放宽到：横轴不超过 14 个点的折线图可以两张并排。“几个指标各一张近 7 日走势”是最常见的排法。</p>
+<div class="demo">
+  <div class="lbl">效果示意：两张折线图并排</div>
+  <div class="cols">
+    <div class="mk-line" data-t="流水（万）" data-v="21,20,19,18,17,17,16"></div>
+    <div class="mk-line" data-t="新增付费人数" data-v="560,540,470,430,410,400,380"></div>
+  </div>
+</div>
+<p><b>一行三张。</b>每张图类目不超过 6 个时允许 <code>[[a,b,c]]</code>；宽度不足时自动退回两张或一张。</p>
+<p><b>图例单选的置灰样式。</b>后端已经在用 ECharts 的 <code>legend.selectedMode:"single"</code> 把同一组的多个指标合进一张图，点图例切换。请确认主题没有覆盖未选中项的置灰色，并给图例项加上可点的手型光标。</p>
+<div class="demo">
+  <div class="lbl">效果示意：点图例切换指标，未选中的置灰</div>
+  <div class="mk-t">3 项指标按渠道</div>
+  <div class="legend" id="lg"></div>
+  <div id="hb"></div>
+</div>
+<h3>修复</h3>
+<div class="tbl"><table>
+<thead><tr><th>问题</th><th>现象</th><th>期望</th></tr></thead>
+<tbody>
+<tr><td>表头首字被裁</td><td><code>tables</code> 的表头第一个字左侧被切掉一部分（预发截图可见）</td><td>表头完整显示，左内边距与数据行一致</td></tr>
+<tr><td>提示框没有单位</td><td>悬停只显示裸数字，如 <code>1284000</code>（预发截图可见）</td><td>数据点带 <code>_display_text</code> 时显示它；否则套用该轴的 <code>axisLabel.formatter</code></td></tr>
+<tr><td>类目名截断后看不到全名</td><td>横向柱图的长类目名显示成 <code>渠道 A-信息流…</code></td><td>悬停轴标签或柱子时显示完整名称</td></tr>
+<tr><td>隐藏状态下初始化的图</td><td>没有实测，请前端确认：放在 <code>:::collapse</code> 里的图，展开后宽度是否正常</td><td>容器从隐藏变为可见时调用 <code>resize()</code>；选项卡同理</td></tr>
+</tbody></table></div>
+<p><code>_display_text</code> 是后端已经写在每个数据点上的字段，形如 <code>{"value": 1284000, "_display_text": "128.4万"}</code>，和柱顶标签是同一份文案。</p>
+</section>
+
+<section id="common">
+<h2>所有新写法的共同要求</h2>
+<ul>
+<li><b>流式。</b>结论是一个字一个字到的。容器语法（<code>:::tabs</code>、<code>:::columns</code>、<code>:::summary</code>）收到开头就画出外框，内容边到边填。JSON 块（<code>timeline</code>、带新字段的 <code>tables</code> 和 <code>kpi</code>）没收完时显示“生成中”占位，和现在的 <code>echarts</code> 一致。</li>
+<li><b>解析失败不丢内容。</b>JSON 不合法、字段类型不对、容器没闭合时，退回显示原文或按普通正文渲染，不要整块空白。</li>
+<li><b>不认识的字段忽略。</b>后端会先发新字段再等前端上线，旧版前端遇到 <code>type</code>、<code>summary</code>、<code>group</code> 这些字段时按现在的样子显示。</li>
+<li><b>嵌套只有一层。</b>容器里可以放块，容器里不放容器。唯一的例外是 <code>:::collapse</code> 可以放进选项卡。</li>
+<li><b>手机端。</b>选项卡横滚，分栏堆叠，表格的数据条和迷你走势保留，时间线不变。</li>
+<li><b>跟随配色主题。</b>涨跌色、主题色、置灰色都取主题变量，后端不传颜色。</li>
+<li><b>复制与导出。</b>复制为文本、导出图片或 PDF 时，选项卡全部展开，口径悬停的内容以括号形式跟在词后。</li>
+<li><b>文档。</b>每项上线时在 <code>markdown.doc.md</code> 里补写法和示例，后端以那份文档为准接入。</li>
+</ul>
+</section>
+
+<section id="reply">
+<h2>需要前端回复的</h2>
+<ul>
+<li>每一项：能做、要改写法，还是做不了。写法可以按渲染器的习惯调整，后端跟着改。</li>
+<li>P0 四项的大致排期。后端会按上线顺序逐项接入。</li>
+<li>修复表里第四条（折叠块里的图）现在是否有问题。</li>
+<li>容器语法用 <code>:::name</code> 加 <code>::item</code> 这种两级写法，解析上有没有困难；有的话请给一个更好实现的写法。</li>
+</ul>
+</section>
+
+<footer>问数后端提出 · 2026-11-11 · 示意数据均为虚构</footer>
+</main>
+</div>
+<script>
+// 代码块复制
+document.querySelectorAll('.code').forEach(function(box){
+  var b=document.createElement('button');b.className='copy';b.type='button';b.textContent='复制';
+  b.onclick=function(){navigator.clipboard.writeText(box.querySelector('pre').textContent).then(function(){b.textContent='已复制';setTimeout(function(){b.textContent='复制'},1200)})};
+  box.appendChild(b);
+});
+// 选项卡示意
+document.querySelectorAll('[data-tabs]').forEach(function(t){
+  var bs=t.querySelectorAll('[role=tab]'),ps=t.querySelectorAll('.tabpane');
+  bs.forEach(function(b,i){b.onclick=function(){bs.forEach(function(x,j){x.setAttribute('aria-selected',j===i);ps[j].hidden=j!==i})}});
+});
+// 平滑曲线
+function smooth(p){var d='M'+p[0][0].toFixed(1)+','+p[0][1].toFixed(1);
+  for(var i=0;i<p.length-1;i++){var a=p[i-1]||p[i],b=p[i],c=p[i+1],e=p[i+2]||c;
+    d+=' C'+[b[0]+(c[0]-a[0])/6,b[1]+(c[1]-a[1])/6,c[0]-(e[0]-b[0])/6,c[1]-(e[1]-b[1])/6,c[0],c[1]].map(function(n){return n.toFixed(1)}).join(',')}
+  return d}
+function scale(v,W,H,pl,pr,pt,pb,lo){var mn=lo==null?Math.min.apply(null,v):lo,mx=Math.max.apply(null,v),r=(mx-mn)||1;
+  return v.map(function(y,i){return [pl+i*(W-pl-pr)/(v.length-1),pt+(1-((y-mn)/r*.8+.1))*(H-pt-pb)]})}
+// 折线图示意：平滑线 + 渐变阴影
+function drawLines(){document.querySelectorAll('.mk-line').forEach(function(el,k){
+  var v=el.dataset.v.split(',').map(Number),W=Math.max(el.clientWidth,220),H=130,pb=22,lo=el.dataset.min?+el.dataset.min:null,p=scale(v,W,H,8,8,8,pb,lo),d=smooth(p),id='gr'+k,base=H-pb;
+  el.innerHTML='<div class="mk-t">'+el.dataset.t+'</div><svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+el.dataset.t+'走势示意"><defs><linearGradient id="'+id+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--accent);stop-opacity:.3"/><stop offset="1" style="stop-color:var(--accent);stop-opacity:0"/></linearGradient></defs>'+
+    '<path d="'+d+' L'+p[p.length-1][0]+','+base+' L'+p[0][0]+','+base+' Z" fill="url(#'+id+')"/>'+
+    '<path d="'+d+'" style="fill:none;stroke:var(--accent);stroke-width:2"/>'+
+    '<line x1="8" x2="'+(W-8)+'" y1="'+base+'" y2="'+base+'" style="stroke:var(--line)"/>'+
+    '<text x="8" y="'+(H-6)+'" style="font-size:10px;fill:var(--muted)">11-04</text><text x="'+(W-8)+'" y="'+(H-6)+'" text-anchor="end" style="font-size:10px;fill:var(--muted)">11-10</text></svg>';
+})}
+drawLines();
+var rz;window.addEventListener('resize',function(){clearTimeout(rz);rz=setTimeout(drawLines,150)});
+// 表格里的迷你走势
+document.querySelectorAll('.spark').forEach(function(el){
+  var v=el.dataset.v.split(',').map(Number),p=scale(v,80,24,2,2,3,3);
+  el.innerHTML='<svg width="80" height="24" viewBox="0 0 80 24" role="img" aria-label="近 7 日走势"><path d="M'+p.map(function(q){return q[0].toFixed(1)+','+q[1].toFixed(1)}).join(' L')+'" style="fill:none;stroke:var(--accent);stroke-width:1.5"/></svg>';
+});
+// 图例单选示意
+(function(){
+  var cats=['渠道 A','渠道 B','渠道 C','渠道 D','渠道 E'];
+  var ms=[{n:'流水（万）',v:[52.1,31.4,22.8,14.6,7.5]},{n:'付费人数',v:[1820,960,1240,410,330]},{n:'ARPPU（元）',v:[28.6,32.7,18.4,35.6,22.7]}];
+  var lg=document.getElementById('lg'),hb=document.getElementById('hb');
+  hb.innerHTML=cats.map(function(c){return '<div class="hb"><div>'+c+'</div><span><i></i></span><em></em></div>'}).join('');
+  var rows=hb.querySelectorAll('.hb');
+  function pick(i){
+    lg.querySelectorAll('button').forEach(function(b,j){b.setAttribute('aria-pressed',j===i)});
+    var mx=Math.max.apply(null,ms[i].v);
+    rows.forEach(function(r,j){r.querySelector('i').style.width=(ms[i].v[j]/mx*100)+'%';r.querySelector('em').textContent=ms[i].v[j].toLocaleString('en-US')});
+  }
+  ms.forEach(function(m,i){var b=document.createElement('button');b.type='button';b.innerHTML='<b>'+m.n+'</b>';b.onclick=function(){pick(i)};lg.appendChild(b)});
+  pick(0);
+})();
+</script>
+</body>
+</html>
